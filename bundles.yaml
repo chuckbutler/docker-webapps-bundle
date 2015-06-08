@@ -1,0 +1,25 @@
+consul-stack:
+  series: trusty
+  services:
+    nginx-proxy:
+      charm: "local:trusty/nginx-proxy"
+      expose: true
+    registrator:
+      charm: "local:trusty/registrator"
+    docker:
+      charm: "local:trusty/docker"
+      num_units: 1
+      options:
+        latest: true
+        version: 1.6.2
+    consul:
+       charm: "local:trusty/consul"
+       num_units: 1
+       expose: true
+       to: ['docker']
+       options:
+         bootstrap-expect: 1
+  relations:
+    - ["registrator", "docker"]
+    - ["registrator:consul-api", "consul:api"]
+    - ["nginx-proxy:template", "consul:api"]
